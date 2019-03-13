@@ -2,7 +2,6 @@
  * This class provides a convenient way to test shuffling methods.
  */
 public class Shuffler {
-
 	/**
 	 * The number of consecutive shuffle steps to be performed in each call
 	 * to each sorting procedure.
@@ -60,22 +59,25 @@ public class Shuffler {
 	 * @param values is an array of integers simulating cards to be shuffled.
 	 */
 	public static void perfectShuffle(int[] values) {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 3 *** */
-		int[] shuffled = new int[52];
-		int k = 0;
-		for(int j=0; j < (values.length + 1)/2; j++)
-		{
-			shuffled[k] = values[j];
-			k = k + 2;
-		}
-		k = 1;
-		for(int j = (values.length + 1)/2; j < values.length; j++)
-		{
-			shuffled[k] = values[j];
-			k = k+2;
-		}
+        int[] firsthalf = new int[ VALUE_COUNT / 2 ];
+        int[] secondhalf = new int[ VALUE_COUNT - VALUE_COUNT / 2 ];
+        for( int i = 0; i < VALUE_COUNT / 2; i++ ) {
+            firsthalf[i] = values[i];
+        }
+        
+        for( int i = 0; i < VALUE_COUNT - VALUE_COUNT / 2; i++ ) {
+            secondhalf[i] = values[ i + VALUE_COUNT / 2 ];
+        }
+
+        for( int i = 0; i < VALUE_COUNT / 2; i++ ) {
+            values[ 2 * i ] = secondhalf[i];
+            values[ 2 * i + 1 ] = firsthalf[i];
+        }
+
+        if( VALUE_COUNT % 2 != 0 ) {
+            values[ VALUE_COUNT - 1 ] = secondhalf[ VALUE_COUNT - VALUE_COUNT / 2 ];
+        }
 	}
-	
 
 	/**
 	 * Apply an "efficient selection shuffle" to the argument.
@@ -89,16 +91,11 @@ public class Shuffler {
 	 * @param values is an array of integers simulating cards to be shuffled.
 	 */
 	public static void selectionShuffle(int[] values) {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 3 *** */
-		int[] shuffled = new int[values.length];
-		int r = 0;
-		int holder= 0;
-		for (int k = values.length-1; k > 0; k--)
-		{
-			r = (int)Math.random()*values.length;
-			holder = values[k];
-			values[k] = values[r];
-			values[r] = holder;	
-		}
-	}
+        for( int i = VALUE_COUNT - 1; i >= 0; i-- ) {
+            int r = (int)(Math.random() * i);
+            int hold = values[r];
+            values[r] = values[i];
+            values[i] = hold;
+        }
+    }
 }
