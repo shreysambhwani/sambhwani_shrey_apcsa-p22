@@ -1,3 +1,4 @@
+
 //(c) A+ Computer Science
 //www.apluscompsci.com
 //Name -
@@ -12,21 +13,18 @@ public class WordRunner
 {
 	public static void main( String args[] ) throws IOException
 	{
-		Scanner file = new Scanner(new File("words.dat"));
-
+		Scanner file = new Scanner(new File("src/words.dat"));
 		int size = file.nextInt();
-		file.nextLine();
 		
-
-
-
-
-
-
-
-
-
-
-
+		Word[] list = new Word[size];
+		
+		for(int i = 0; i < size; i++)
+		{
+			list[i] = new Word(file.next());
+		}
+		
+		Arrays.sort(list);
+	
+		System.out.println(Arrays.toString(list));
 	}
 }
