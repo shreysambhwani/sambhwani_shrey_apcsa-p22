@@ -10,7 +10,7 @@ public class Doggies
 
 	public Doggies(int size)
 	{
-		//point pups at a new arry of Dog
+		//point pups at a new array of Dog
 		pups = new Dog[size];
 	}
 	
