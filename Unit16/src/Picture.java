@@ -389,7 +389,44 @@ public class Picture extends SimplePicture
     this.mirrorVertical();
     this.write("src/images/collage.jpg");
   }
-  
+  public void sharpen(int x, int y, int w, int h) {
+		System.out.println("Bryan Zhang\nPeriod 2\n2018/4/24\n38");
+
+		if (x == 0) x += 1;
+		if (y == 0) y += 1;
+
+		Pixel[][] pixels = this.getPixels2D();
+		for (int row = y; row < h; row++) {
+			for (int col = x; col < w; col++) {
+				Pixel currPixel = pixels[row][col];
+				Pixel newPixel = pixels[row - 1][col - 1];
+
+				currPixel.setRed(currPixel.getRed() + (currPixel.getRed() - newPixel.getRed()) / 2);
+				if (currPixel.getRed() > 255) currPixel.setRed(255);
+				else if (currPixel.getRed() < 0) currPixel.setRed(0);
+
+				currPixel.setBlue(currPixel.getBlue() + (currPixel.getBlue() - newPixel.getBlue()) / 2);
+				if (currPixel.getBlue() > 255) currPixel.setBlue(255);
+				else if (currPixel.getBlue() < 0) currPixel.setBlue(0);
+
+				currPixel.setGreen(currPixel.getGreen() + (currPixel.getGreen() - newPixel.getGreen()) / 2);
+				if (currPixel.getGreen() > 255) currPixel.setGreen(255);
+				else if (currPixel.getGreen() < 0) currPixel.setGreen(255);
+			}
+		}
+	}
+
+//sharpen code , name in constructor, 
+//testSharpen(50,50,500,400); runner
+//method runner
+/*public static void testSharpen(int x, int y, int w, int h){
+Picture redMoto = new Picture("redMotorcycle.jpg");
+redMoto.explore();
+redMoto.sharpen(x,y,w,h);
+redMoto.explore();
+}
+*/
+
   public void myCollage() {
 		Picture flower1 = new Picture("src/images/flower1.jpg");
 	    Picture flower2 = new Picture("src/images/flower2.jpg");

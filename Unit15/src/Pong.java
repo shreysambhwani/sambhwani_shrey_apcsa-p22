@@ -1,4 +1,3 @@
-
 //(c) A+ Computer Science
 //www.apluscompsci.com
 //Name -
@@ -17,23 +16,24 @@ import java.awt.event.ActionListener;
 public class Pong extends Canvas implements KeyListener, Runnable
 {
 	private Ball ball;
+	//private BlinkyBall ball;
+	//private SpeedUpBall ball;
 	private Paddle leftPaddle;
 	private Paddle rightPaddle;
 	private boolean[] keys;
 	private BufferedImage back;
-	private int right=0, left=0;
-
-
+	private int leftScore=0;
+	private int rightScore=0;
+	private int speed = 2;
 	public Pong()
 	{
 		//set up all variables related to the game
-		ball = new Ball(350, 200);
-		leftPaddle = new Paddle(50, 200, 20, 100, Color.GREEN, 5);
-		rightPaddle = new Paddle(730,200, 20, 100, Color.RED, 5);
-
-
+		
+		ball = new Ball(200,200,10,10,1,1);
+		leftPaddle = new Paddle(20,300,10,50,Color.black,speed);
+		rightPaddle = new Paddle(750,300,10,50,Color.black,speed);
 		keys = new boolean[4];
-
+		ball.setColor(Color.red);
     
     	setBackground(Color.WHITE);
 		setVisible(true);
@@ -44,98 +44,101 @@ public class Pong extends Canvas implements KeyListener, Runnable
 	
    public void update(Graphics window){
 	   paint(window);
+	  
    }
-
+   public void restart() {
+	    ball = new Ball(200,200,10,10,1,1);
+		leftPaddle = new Paddle(20,300,10,50,Color.black,speed);
+		rightPaddle = new Paddle(750,300,10,50,Color.black,speed);
+		keys = new boolean[4];
+		ball.setColor(Color.red);
+   
+	
+		
+		
+		
+   }
    public void paint(Graphics window)
    {
+	   
+
 		//set up the double buffering to make the game animation nice and smooth
 		Graphics2D twoDGraph = (Graphics2D)window;
-
-		//take a snap shop of the current screen and same it as an image
+		 back = (BufferedImage)(createImage(getWidth(),getHeight()));
+		//take a snap shot of the current screen and same it as an image
 		//that is the exact same width and height as the current screen
 		if(back==null)
 		   back = (BufferedImage)(createImage(getWidth(),getHeight()));
-
+		
 		//create a graphics reference to the back ground image
 		//we will draw all changes on the background image
 		Graphics graphToBack = back.createGraphics();
 
-
+		graphToBack.drawString("Left Score: " + leftScore, 10, 10);
+		graphToBack.drawString("Right Score: " + rightScore, 700, 10);
 		ball.moveAndDraw(graphToBack);
 		leftPaddle.draw(graphToBack);
 		rightPaddle.draw(graphToBack);
 
 
 		//see if ball hits left wall or right wall
-		if(!(ball.getX()>=0 && ball.getX()<=getWidth()))
-		{
-			ball.setXSpeed(0);
-			ball.setYSpeed(0);
-			if (ball.getX() <= leftPaddle.getX()){
-				graphToBack.setColor(Color.WHITE);
-				graphToBack.drawString("Right Player:  " + right, 500, 500);
-				right++;
-				graphToBack.setColor(Color.BLUE);
-				graphToBack.drawString("Right Player:  " + right, 500, 500);
+		if(!(ball.getX()>=10 && ball.getX()<=780)){
+			if(ball.getX()<= 10) {
+				rightScore+=1;
+				ball.setXSpeed(0);
+				ball.setYSpeed(0);
+				
 			}
-			
-			else if (ball.getX() >= rightPaddle.getX()+rightPaddle.getWidth()){
-				graphToBack.setColor(Color.WHITE);
-				graphToBack.drawString("Left Player: "+left, 200, 500);
-				left++;
-				graphToBack.setColor(Color.BLUE);
-				graphToBack.drawString("Left Player: "+left, 200, 500);
+			if(ball.getX() >= 780) {
+				leftScore+=1;
+				ball.setXSpeed(0);
+				ball.setYSpeed(0);
+				
 			}
+			restart();
 			
-			ball.draw(graphToBack, Color.WHITE);
-			ball= new Ball(300 + (int) (Math.random() * 200),200 + (int) (Math.random() * 200),10,10,Color.BLACK, (int) (Math.pow(-1,  (int) (Math.random() * 2))) * 3, (int) (Math.random() * 3 + 1) * (int) (Math.pow(-1,  (int) (Math.random() * 2))));
-			ball.moveAndDraw(graphToBack);
 		}
-
-		
 		//see if the ball hits the top or bottom wall 
-		if(!(ball.getY()>=0 && ball.getY() <= getHeight())) {
+		if(!(ball.getY()>=10 && ball.getY()<= 550)){
 			ball.setYSpeed(-ball.getYSpeed());
+			
 		}
+	//see if the ball hits the left paddle
+		if(ball.getX() == leftPaddle.getX() + leftPaddle.getWidth() && ((leftPaddle.getY() <= ball.getY()) && (ball.getY() <= leftPaddle.getY() + leftPaddle.getHeight()))){
+			//ball.increaseSpeed(ball.getXSpeed());
 
-
-
-		//see if the ball hits the left paddle
-		if (ball.didCollideLeft(leftPaddle)) 
-		{
-			ball.setXSpeed(Math.abs(ball.getXSpeed()));
+			ball.setXSpeed(-ball.getXSpeed());
+			
 		}
-		else if (ball.didCollideRight(rightPaddle)) {
-			ball.setXSpeed(-Math.abs(ball.getXSpeed()));
-		}
-		else if (ball.didCollideTop(leftPaddle) || ball.didCollideTop(rightPaddle)
-				|| ball.didCollideBottom(leftPaddle) || ball.didCollideBottom(rightPaddle)) 
-		{
-			ball.setYSpeed(-ball.getYSpeed());
-		}
+		
+		
+		//see if the ball hits the right paddle
+		if ((ball.getX() == rightPaddle.getX() - rightPaddle.getWidth()) && ((rightPaddle.getY() <= ball.getY()) && (ball.getY() <= rightPaddle.getY() + rightPaddle.getHeight())))
+	        {
+				//ball.increaseSpeed(ball.getXSpeed());
 
+	        	ball.setXSpeed(-ball.getXSpeed());
+
+	        }
 		//see if the paddles need to be moved
+		if(keys[0] == true)
+		{
+			leftPaddle.moveDownAndDraw(window);
+		}
+		if(keys[1] == true)
+		{
+			leftPaddle.moveUpAndDraw(window);
 
-		if(keys[0] == true && leftPaddle.getY() >= 0)
-		{
-			leftPaddle.moveUpAndDraw(graphToBack);
 		}
-		
-		if(keys[1] == true && leftPaddle.getY() <= getHeight() - leftPaddle.getHeight())
+		if(keys[2] == true)
 		{
-			leftPaddle.moveDownAndDraw(graphToBack);
+			rightPaddle.moveDownAndDraw(window);
 		}
-		
-		if(keys[2] == true && rightPaddle.getY() >= 0)
+		if(keys[3] == true)
 		{
-			rightPaddle.moveUpAndDraw(graphToBack);
+			rightPaddle.moveUpAndDraw(window);
 		}
-		
-		if(keys[3] == true && rightPaddle.getY() <= getHeight()-leftPaddle.getHeight())
-		{
-			rightPaddle.moveDownAndDraw(graphToBack);
-		}
-		
+
 		twoDGraph.drawImage(back, null, 0, 0);
 	}
 
@@ -144,9 +147,9 @@ public class Pong extends Canvas implements KeyListener, Runnable
 		switch(toUpperCase(e.getKeyChar()))
 		{
 			case 'W' : keys[0]=true; break;
-			case 'Z' : keys[1]=true; break;
+			case 'S' : keys[1]=true; break;
 			case 'I' : keys[2]=true; break;
-			case 'M' : keys[3]=true; break;
+			case 'K' : keys[3]=true; break;
 		}
 	}
 
@@ -155,9 +158,9 @@ public class Pong extends Canvas implements KeyListener, Runnable
 		switch(toUpperCase(e.getKeyChar()))
 		{
 			case 'W' : keys[0]=false; break;
-			case 'Z' : keys[1]=false; break;
+			case 'S' : keys[1]=false; break;
 			case 'I' : keys[2]=false; break;
-			case 'M' : keys[3]=false; break;
+			case 'K' : keys[3]=false; break;
 		}
 	}
 
@@ -177,4 +180,3 @@ public class Pong extends Canvas implements KeyListener, Runnable
       }
   	}	
 }
-
