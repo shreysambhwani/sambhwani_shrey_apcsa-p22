@@ -1,10 +1,12 @@
-import java.awt.*;
+import java.awt.Color;
 import java.awt.font.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.text.*;
 import java.util.*;
 import java.util.List; // resolves problem with java.awt.List and java.util.List
+
+
 
 /**
  * A class that represents a picture.  This class inherits from 
@@ -389,43 +391,9 @@ public class Picture extends SimplePicture
     this.mirrorVertical();
     this.write("src/images/collage.jpg");
   }
-  public void sharpen(int x, int y, int w, int h) {
-		System.out.println("Bryan Zhang\nPeriod 2\n2018/4/24\n38");
 
-		if (x == 0) x += 1;
-		if (y == 0) y += 1;
 
-		Pixel[][] pixels = this.getPixels2D();
-		for (int row = y; row < h; row++) {
-			for (int col = x; col < w; col++) {
-				Pixel currPixel = pixels[row][col];
-				Pixel newPixel = pixels[row - 1][col - 1];
 
-				currPixel.setRed(currPixel.getRed() + (currPixel.getRed() - newPixel.getRed()) / 2);
-				if (currPixel.getRed() > 255) currPixel.setRed(255);
-				else if (currPixel.getRed() < 0) currPixel.setRed(0);
-
-				currPixel.setBlue(currPixel.getBlue() + (currPixel.getBlue() - newPixel.getBlue()) / 2);
-				if (currPixel.getBlue() > 255) currPixel.setBlue(255);
-				else if (currPixel.getBlue() < 0) currPixel.setBlue(0);
-
-				currPixel.setGreen(currPixel.getGreen() + (currPixel.getGreen() - newPixel.getGreen()) / 2);
-				if (currPixel.getGreen() > 255) currPixel.setGreen(255);
-				else if (currPixel.getGreen() < 0) currPixel.setGreen(255);
-			}
-		}
-	}
-
-//sharpen code , name in constructor, 
-//testSharpen(50,50,500,400); runner
-//method runner
-/*public static void testSharpen(int x, int y, int w, int h){
-Picture redMoto = new Picture("redMotorcycle.jpg");
-redMoto.explore();
-redMoto.sharpen(x,y,w,h);
-redMoto.explore();
-}
-*/
 
   public void myCollage() {
 		Picture flower1 = new Picture("src/images/flower1.jpg");
@@ -491,7 +459,114 @@ redMoto.explore();
     	}
     }
   }
+  public int triangle(int n) {
+	  if (n == 1) {
+	        return 1;
+	        }
+	    else{
+	        return n + triangle(n-1);}
+  }
+  public void encode (Picture messagePict)
+  {
+	 int highdiff=0;
+	 int lowdiff = 0;
+	 int a[]=new int[23];
+	 a[0]=1;
+	 for (int i = 1;i<a.length;i++)
+	 {
+	 a[i]=triangle(i);}
+	 Pixel[][] messagePixels = messagePict.getPixels2D();
+	 Pixel[][] currPixels = this.getPixels2D();
+	 Pixel currPixel = null;
+	 Pixel messagePixel = null;
+	 int count = 0;
+	 for (int row = 0; row < this.getHeight(); row++)
+	 {
+		 for (int col = 0; col < this.getWidth(); col++)
+		 {
+			 currPixel = currPixels[row][col];
+			 int number = currPixel.getRed();
+			 if ((messagePixel.colorDistance(Color.BLACK) < 50))
+			 {
+				 for (int add = 1; add < 30; add++)
+  				 {
+  					 currPixel.setRed(currPixel.getRed()+1);
+  					 for (int j=0; j< a.length;j++)
+  					 {
+  					 if (a[j] == currPixel.getRed())
+  					 {
+  						 highdiff = currPixel.getRed() - number;
+  						 break;
+  					 }
+  				 }
+  				 currPixel.setRed(number);
+  				 for (int sub = 1; sub < 30; sub++)
+  				 {
+  					currPixel.setRed(currPixel.getRed()-1);
+  					for (int j=0; j< a.length;j++)
+ 					 {
+ 					 if (a[j] == currPixel.getRed())
+ 					 {
+ 						 lowdiff = number-currPixel.getRed();
+ 						 break;
+ 					 }
+  				 }
+  				 currPixel.setRed(number);
+  				 if (lowdiff > highdiff)
+  				 {
+  					 currPixel.setRed(number - lowdiff);
+  				 }
+  				 else if (highdiff < lowdiff)
+  				 {
+  					 currPixel.setRed(number + highdiff);
+  				 }
+			 }}
+			 messagePixel = messagePixels[row][col];
+			 if (!(messagePixel.colorDistance(Color.BLACK) < 50))
+			 {
+				 currPixel.setRed(currPixel.getRed() + 1);
+				 count++;
+			 }
+			 }}}
+	 System.out.println(count); }
+
   
+  	public Picture decode()
+  	{
+  	  	int a[]=new int[23];
+  	  	a[0]=1;
+  	  for (int i = 1;i<a.length;i++)
+ 	 {
+ 	 a[i]=triangle(i);}
+  		Pixel[][] pixels = this.getPixels2D();
+  		int height = this.getHeight();
+  		int width = this.getWidth();
+  		Pixel currPixel = null;
+  		Pixel messagePixel = null;
+		Picture messagePicture = new Picture(height, width);
+  		Pixel[][] messagePixels = messagePicture.getPixels2D();
+  		int count = 0; 
+  		for (int row = 0; row < this.getHeight(); row++)
+  		{
+  			for (int col = 0; col < this.getWidth(); col++)
+  			{
+  				currPixel = pixels[row][col];
+  				int num = currPixel.getRed();
+  				messagePixel = messagePixels[row][col];
+ 					 for (int j=0; j< a.length;j++)
+ 					 {
+ 					 if (a[j] == currPixel.getRed())
+ 					 {
+ 						messagePixel.setColor(Color.BLACK);
+ 	  					count++;
+ 					 }
+ 				 }
+  			}
+  		}
+  		
+  		System.out.println(count);
+  		return messagePicture;
+  	}
   public void edgeDetection2(int edgeDist) {
 	  Pixel centerPixel = null;
 	  Pixel[][] pixels = this.getPixels2D();
@@ -540,7 +615,7 @@ redMoto.explore();
 		  }
 	  }
   }
-  
+
   public static Color avgColor(Color one, Color two, Color three) {
 	  int avgRed = (one.getRed() + two.getRed() + three.getRed())/3;
 	  int avgBlue = (one.getBlue() + two.getBlue() + three.getBlue())/3;

@@ -10,12 +10,13 @@ public class PictureTester
 {
   /** Method to test zeroBlue */
   public static void testZeroBlue()
-  {
-    Picture beach = new Picture("src/images/beach.jpg");
-    beach.explore();
-    beach.zeroBlue();
-    beach.explore();
+  { Picture beach = new Picture("src/images/beach.jpg");
+  beach.explore();
+  beach.zeroBlue();
+  beach.explore();
   }
+
+
   public static void testKeepOnlyRed() {
 	  Picture beach = new Picture("src/images/beach.jpg");
 	  beach.explore();
@@ -105,11 +106,6 @@ public class PictureTester
 	  gulls.mirrorGull();
 	  gulls.explore();
   }
-  public static void testSharpen(int x, int y, int w, int h){
-	  Picture redMoto = new Picture("src/images/redMotorcycle.jpg");
-	  redMoto.explore();
-	  redMoto.sharpen(x,y,w,h);
-	  redMoto.explore();}
   
   /** Method to test the collage method */
   public static void testCollage()
@@ -140,7 +136,16 @@ public class PictureTester
 	  swan.edgeDetection2(17);
 	  swan.explore();
   }
-  
+  public static void testEncodeandDecode1()
+  {
+	  Picture beach = new Picture("src/images/beach.jpg");
+	  Picture message = new Picture("src/images/msg.jpg");
+	  beach.explore();
+	  beach.encode(message);
+	  beach.explore();
+	  beach.decode().explore();
+  }
+
   public static void testMirrorGull()
   {
     Picture seagull = new Picture(("src/images/seagull.jpg"));
@@ -148,7 +153,6 @@ public class PictureTester
     seagull.mirrorGull();
     seagull.explore();
   }
- 
   /** Main method for testing.  Every class can have a main
     * method in Java */
   public static void main(String[] args)
@@ -178,7 +182,7 @@ public class PictureTester
     //testEdgeDetection();
     //testEdgeDetection2();
     //testChromakey();
-    //testEncodeAndDecode();
+    testEncodeandDecode1();
     //testGetCountRedOverValue(250);
     //testSetRedToHalfValueInTopHalf();
     //testClearBlueOverValue(200);
